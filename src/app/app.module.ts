@@ -12,16 +12,14 @@ import { ProductService } from './services/product.service';
 import { HttpModule } from '@angular/http';
 import { HomeComponent } from './home/home.component';
 import { ProductCardComponent } from './home/product-card/product-card.component';
-import { TablesComponent } from './home/tables/tables.component';
-import { CartService } from './services/cart.service';
+import { TableService } from './services/table.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     AdminComponent,
     HomeComponent,
-    ProductCardComponent,
-    TablesComponent
+    ProductCardComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +28,7 @@ import { CartService } from './services/cart.service';
     ReactiveFormsModule,
     HttpModule
   ],
-  providers: [ProductService, CartService],
+  providers: [ProductService, TableService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
