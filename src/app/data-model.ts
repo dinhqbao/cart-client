@@ -6,14 +6,13 @@ export class Product {
     image: string;
 }
 
-export class CartItem {
-    productId: String;
-    unitPrice: number;
-    quantity: number;
-}
-
 export class Table {
-    _id: number;
+    _id: string;
+    tableId: number;
     totalPrice: number;
-    cart: CartItem[]
+    cart: [{
+        productId: String;
+        unitPrice: number;
+        quantity: number;
+    }]
 }

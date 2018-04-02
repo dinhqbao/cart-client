@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Product, Table, CartItem } from '../data-model';
+import { Product, Table } from '../data-model';
 import { ProductService } from '../services/product.service';
 import { TableService } from '../services/table.service';
 
@@ -12,9 +12,10 @@ declare var jquery: any;
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];
-  product: Product = new Product();
+  // product: Product = new Product();
   tables: Table[] = [];
-  table: Table = new Table;
+  table = new Table;
+  cartProducts: any;
 
   apiUrl = "http://localhost:3001/"
 
@@ -26,44 +27,53 @@ export class HomeComponent implements OnInit {
       .then(p => {
         this.products = p.products;
       });
-      this.table = new Table();
-      this.table._id = 1;
-      this.table.totalPrice = 0;
-      this.table.cart = [];
 
-    // this.tableService.getTables()
-    //   .then(t => this.tables = t.tables);
+    this.tableService.getTables()
+      .then(t => this.tables = t.tables);
 
-    // $('#tableList').modal('show');
+    $('#tableList').modal('show');
   }
 
-  // getSelectedTable(table: Table): void {
-  //   this.table = table;
-  //   $('#tableList').modal('hide');
-  // }
+  getSelectedTable(table: any): void {
+    this.table = table;
+    let cart = localStorage.getItem(table._id.toString());
+    if(cart !== null){
+      this.cartProducts = JSON.parse(cart);
+    } else {
+      this.cartProducts = [];
+    }
 
-  addToCart(product: Product) {
-    var pCart = this.table.cart.find(p => p.productId == product._id);
-    if(pCart == null){
-      this.table.cart.push({
+    $('#tableList').modal('hide');
+  }
+
+  addToCart(product: any) {
+    debugger;
+    var cartProduct = this.cartProducts.find(p => p.productId == product._id);
+    if(cartProduct == null){
+      this.cartProducts.push({
         productId: product._id,
         unitPrice: product.price,
         quantity: 1
       })
     }
     else {
-      pCart.quantity ++;
+      cartProduct.quantity ++;
     }
-    this.table.totalPrice += (product.price);
+    this.cartProducts.totalPrice += (product.price);
+
+    localStorage.setItem(this.table._id, JSON.stringify(this.cartProducts));
   }
 
-  removeFromCart(product: Product) {
-    var pCart = this.table.cart.find(p => p.productId == product._id);
+  removeFromCart(product: any) {
+    debugger;
+    var pCart = this.cartProducts.find(p => p.productId == product._id);
     if(pCart == null){
     }
     else {
       pCart.quantity --;
     }
-    this.table.totalPrice -= (product.price);
+    this.cartProducts.totalPrice -= (product.price);
+
+    localStorage.setItem(this.table._id, JSON.stringify(this.cartProducts));
   }
 }

@@ -13,12 +13,14 @@
                 </div>
                 <div class="qty-spiner col-2 btn-group-vertical" role="group">
                     <button type="button" class="btn btn-secondary" (click)="addToCart(product)">
-                    <i class="fas fa-angle-up"></i>
-                  </button>
-                    <input class="product-qty" type="text" value="0" readonly>
+                        <i class="fas fa-angle-up"></i>
+                    </button>
+
+                    <input class="product-qty" type="text" [value]="1" readonly>
+
                     <button type="button" class="btn btn-secondary" (click)="removeFromCart(product)">
-                    <i class="fas fa-angle-down"></i>
-                  </button>
+                        <i class="fas fa-angle-down"></i>
+                    </button>
                 </div>
             </div>
             <hr/>
@@ -29,7 +31,7 @@
         <div class="footer-left">
             <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#tableList">
                 Bàn
-                <span class="badge badge-light">{{ table._id }}</span>
+                <span class="badge badge-light">{{ table.tableId }}</span>
             </button>
             <button type="button" class="btn btn-danger">
                 Làm mới
@@ -51,7 +53,7 @@
                         <div *ngFor="let table of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
                             <div class="card border-dark text-center" (click)="getSelectedTable(table)">
                                 <div class="text-dark">
-                                    <h2 class="card-title">{{table._id}}</h2>
+                                    <h2 class="card-title">{{table.tableId}}</h2>
                                     <h5>
                                         <strong>{{table.totalPrice}}đ</strong>
                                     </h5>

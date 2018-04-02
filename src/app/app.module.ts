@@ -11,15 +11,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { ProductService } from './services/product.service';
 import { HttpModule } from '@angular/http';
 import { HomeComponent } from './home/home.component';
-import { ProductCardComponent } from './home/product-card/product-card.component';
 import { TableService } from './services/table.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     AdminComponent,
-    HomeComponent,
-    ProductCardComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
