@@ -29,51 +29,74 @@ export class HomeComponent implements OnInit {
       });
 
     this.tableService.getTables()
-      .then(t => this.tables = t.tables);
+      .then(t => this.tables = t.tables
+    );
 
     $('#tableList').modal('show');
   }
 
   getSelectedTable(table: any): void {
     this.table = table;
+    this.table.totalPrice = 0;
     let cart = localStorage.getItem(table._id.toString());
     if(cart !== null){
       this.cartProducts = JSON.parse(cart);
-    } else {
-      this.cartProducts = [];
-    }
+    } 
 
+    for (var product of this.products) {
+      var p = this.cartProducts.find(x => x.productId == product._id);
+      if(p != null){
+        product.quantity = p.quantity;
+      }
+      else {
+        product.quantity = 0;
+      }
+      this.table.totalPrice += product.price * product.quantity;
+    }
+    
     $('#tableList').modal('hide');
   }
 
   addToCart(product: any) {
-    debugger;
     var cartProduct = this.cartProducts.find(p => p.productId == product._id);
     if(cartProduct == null){
-      this.cartProducts.push({
+      cartProduct = {
         productId: product._id,
         unitPrice: product.price,
         quantity: 1
-      })
+      };
+      this.cartProducts.push(cartProduct);
     }
     else {
       cartProduct.quantity ++;
     }
-    this.cartProducts.totalPrice += (product.price);
 
     localStorage.setItem(this.table._id, JSON.stringify(this.cartProducts));
+
+    $("#" + product._id).val(cartProduct.quantity);
+    this.table.totalPrice += (product.price);
   }
 
   removeFromCart(product: any) {
-    debugger;
-    var pCart = this.cartProducts.find(p => p.productId == product._id);
-    if(pCart == null){
+    var cartProduct = this.cartProducts.find(p => p.productId == product._id);
+    if(cartProduct == null){
     }
     else {
-      pCart.quantity --;
+      cartProduct.quantity --;
     }
-    this.cartProducts.totalPrice -= (product.price);
-
     localStorage.setItem(this.table._id, JSON.stringify(this.cartProducts));
+
+    $("#" + product._id).val(cartProduct.quantity);
+    this.table.totalPrice -= (product.price);
+  }
+
+  resetTable() {
+    this.table.totalPrice = 0;
+    this.cartProducts = [];
+    // this.products.map(p => p['quantity'] = 0)
+    for (const product of this.products) {
+      product.quantity = 0;
+    }
+    localStorage.setItem(this.table._id, "[]");
   }
 }

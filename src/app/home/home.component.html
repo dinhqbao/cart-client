@@ -16,8 +16,12 @@
                         <i class="fas fa-angle-up"></i>
                     </button>
 
-                    <input class="product-qty" type="text" [value]="1" readonly>
+                    <input id="{{product._id}}" class="product-qty" type="number" max="100" min="0" value={{product.quantity}} readonly>
 
+                    <div *ngIf="product.quantity.errors.min">
+                        Name cannot be Bob.
+                    </div>
+                    
                     <button type="button" class="btn btn-secondary" (click)="removeFromCart(product)">
                         <i class="fas fa-angle-down"></i>
                     </button>
@@ -33,7 +37,7 @@
                 Bàn
                 <span class="badge badge-light">{{ table.tableId }}</span>
             </button>
-            <button type="button" class="btn btn-danger">
+            <button type="button" class="btn btn-danger" (click)="resetTable()">
                 Làm mới
             </button>
         </div>
@@ -50,12 +54,13 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row">
-                        <div *ngFor="let table of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
-                            <div class="card border-dark text-center" (click)="getSelectedTable(table)">
-                                <div class="text-dark">
-                                    <h2 class="card-title">{{table.tableId}}</h2>
+                        <div *ngFor="let tbl of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
+                            <div class="card border-dark text-center" (click)="getSelectedTable(tbl)">
+                                <div class="text-dark" [ngClass]="{'active': tbl._id==table._id}">
+                                    <h2 class="card-title">{{tbl.tableId}}</h2>
                                     <h5>
-                                        <strong>{{table.totalPrice}}đ</strong>
+                                        <strong [hidden]="tbl.totalPrice == 0">{{tbl.totalPrice}}.000đ</strong>
+                                        <strong [hidden]="tbl.totalPrice > 0">0đ</strong>
                                     </h5>
                                 </div>
                             </div>
