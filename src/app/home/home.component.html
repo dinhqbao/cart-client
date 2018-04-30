@@ -66,7 +66,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 
-                <div class="text-center" [hidden]="tables.length > 0">Không có bàn để hiển thị, vào <a href="/">đây</a> để thêm bàn</div>
+                <div class="text-center" [hidden]="tables.length > 0">Không có bàn để hiển thị, vào <a href="/admin">đây</a> để thêm bàn</div>
                 <div class="row">
                     <div *ngFor="let tbl of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
                         <div class="card border-dark text-center" (click)="getSelectedTable(tbl)">

@@ -28,4 +28,4 @@ export enum OrderStatus {
     Paid = 2
 }
 
-export let ServerUrl: String = '192.168.1.5';
+export let ServerUrl: String = '192.168.1.200';
