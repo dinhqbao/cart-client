@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http } from "@angular/http";
-import { Product, Table } from '../data-model';
+import { Product, Table, ServerUrl } from '../data-model';
 
 @Injectable()
 export class TableService {
-  private apiUrl = 'http://localhost:3001/api/table/';
-  tables: Table[] = [];
+  private apiUrl = "http://" + ServerUrl + ":3001/api/table/";
 
   constructor(private http: Http) {}
 
@@ -15,13 +14,26 @@ export class TableService {
                 .then(this.handleData)
                 .catch(this.handleError)
   }
-  
-  removeFromCart(product: Product): void {
-    throw new Error("Method not implemented.");
+
+  createTable(table: Table): Promise<any> {
+    return this.http.post(this.apiUrl, table)
+                .toPromise()
+                .then(this.handleData)
+                .catch(this.handleError);
   }
 
-  addToCart(product: Product): void {
-    throw new Error("Method not implemented.");
+  updateTable(table: Table): Promise<any> {
+    return this.http.put(this.apiUrl, table)
+                .toPromise()
+                .then(this.handleData)
+                .catch(this.handleError);
+  }
+
+  deleteTable(table: Table): any {
+    return this.http.delete(this.apiUrl + table._id)
+                .toPromise()
+                .then(this.handleData)
+                .catch(this.handleError);
   }
 
   handleError(error: any): Promise<any> {

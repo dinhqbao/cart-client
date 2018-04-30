@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { Product } from "../data-model";
+import { Product, Table } from "../data-model";
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from '../services/product.service';
+import { TableService } from '../services/table.service';
 
 declare var jquery: any;
 declare var $: any;
@@ -13,22 +14,35 @@ declare var $: any;
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent {
+export class AdminComponent implements OnInit {
 
   products: Product[] = [];
   product = new Product();
-  loading: boolean = false;
-  action: string;
+  tables: Table[] = [];
+  table = new Table();
+  ploading: boolean = false;
+  tloading: boolean = false;
+  pAction: string;
+  tAction: string;
   productForm: FormGroup;
   @ViewChild('fileInput') fileInput: ElementRef;
 
   constructor(private fb: FormBuilder,
-    private productService: ProductService) {
+    private productService: ProductService,
+    private tableService: TableService) {
+  }
+
+  ngOnInit(): void {
     this.initProductForm();
     this.productService.getProducts()
       .then(p => {
         this.products = p.products;
       });
+
+    this.tableService.getTables()
+      .then(t => {
+        this.tables = t.tables;
+      })
   }
 
   initProductForm() {
@@ -61,7 +75,7 @@ export class AdminComponent {
   prepareSave(): any {
     let formInput = new FormData();
     Object.keys(this.productForm.controls).forEach(key => {
-      if ((this.action == "c" && key != "_id") || this.action == "u")
+      if ((this.pAction == "c" && key != "_id") || this.pAction == "u")
         formInput.append(key, this.productForm.get(key).value);
     });
     return formInput;
@@ -69,29 +83,29 @@ export class AdminComponent {
 
   showCreateProductModal(): void {
     this.product = new Product();
-    this.action = "c";
+    this.pAction = "c";
     this.createProductForm(this.product);
     $('#createProductModal').modal('show');
   }
 
   createProduct(): void {
     const formInput = this.prepareSave();
-    this.loading = true;
-    if (this.action == "c") {
+    this.ploading = true;
+    if (this.pAction == "c") {
       this.productService.createProduct(formInput)
         .then(p => {
           $('#createProductModal').modal('hide');
-          this.loading = false;
+          this.ploading = false;
 
           var position = this.products.filter(x => x.ordinal <= p.product.ordinal).length;
           this.products.splice(position, 0, p.product);
         });
     }
-    else if (this.action == "u") {
+    else if (this.pAction == "u") {
       this.productService.updateProduct(formInput)
         .then(pt => {
           $('#createProductModal').modal('hide');
-          this.loading = false;
+          this.ploading = false;
 
           this.products = this.products.map(x => {
             if (pt.product._id !== x._id) {
@@ -105,7 +119,7 @@ export class AdminComponent {
 
   showUpdateProductModal(product: Product): void {
     this.product = product;
-    this.action = "u";
+    this.pAction = "u";
     this.createProductForm(this.product);
     $('#createProductModal').modal('show');
   }
@@ -120,7 +134,7 @@ export class AdminComponent {
 
   updateProduct(): void {
     const formInput = this.prepareSave();
-    this.loading = true;
+    this.ploading = true;
   }
 
   showDeleteProductModal(product: Product): void {
@@ -133,6 +147,61 @@ export class AdminComponent {
       .then(p => {
         $('#deleteProductModal').modal('hide');
         this.products = this.products.filter(x => x._id != this.product._id);
+      })
+  }
+
+  /////////// Table
+
+  showCreateTableModal(): void {
+    this.table = new Table();
+    this.tAction = "c";
+    $('#createTableModal').modal('show');
+  }
+
+  createTable(): void {
+    this.tloading = true;
+    if (this.tAction == "c") {
+      this.tableService.createTable(this.table)
+        .then(tb => {
+          $('#createTableModal').modal('hide');
+          this.tloading = false;
+
+          var position = this.tables.filter(x => x.ordinal <= tb.table.ordinal).length;
+          this.tables.splice(position, 0, tb.table);
+        });
+    }
+    else if (this.tAction == "u") {
+      this.tableService.updateTable(this.table)
+        .then(tb => {
+          $('#createTableModal').modal('hide');
+          this.tloading = false;
+
+          this.tables = this.tables.map(x => {
+            if (tb.table._id !== x._id) {
+              return x;
+            }
+            return { ...x, ...tb.table };
+          })
+        })
+    }
+  }
+
+  showUpdateTableModal(table: Table): void {
+    this.table = table;
+    this.tAction = "u";
+    $('#createTableModal').modal('show');
+  }
+
+  showDeleteTableModal(table: Table): void {
+    this.table = table;
+    $('#deleteTableModal').modal('show');
+  }
+
+  deleteTable(): void {
+    this.tableService.deleteTable(this.table)
+      .then(p => {
+        $('#deleteTableModal').modal('hide');
+        this.tables = this.tables.filter(x => x._id != this.table._id);
       })
   }
 }

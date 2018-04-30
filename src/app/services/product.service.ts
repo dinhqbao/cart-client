@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http } from "@angular/http";
-import { Product } from '../data-model';
+import { Product, ServerUrl } from '../data-model';
 
 @Injectable()
 export class ProductService {
-  private apiUrl = 'http://localhost:3001/api/product/';
+  private apiUrl = "http://" + ServerUrl + ":3001/api/product/";
 
   constructor(private http: Http) { }
 

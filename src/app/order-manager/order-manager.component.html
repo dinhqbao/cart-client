@@ -1,0 +1,49 @@
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="/home">Đặt hàng</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="/admin">Admin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="/order">Quản lý đơn hàng</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="row">
+
+    <div *ngFor="let order of orders; let i = index" class="col-md-4 col-lg-3 order-card">
+      <div class="card" [ngClass]="{'order-succeeded': order.status==1}">
+        <h1 class="card-title text-center">{{i+1}}</h1>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let product of order.products">
+
+            <div class="row">
+              <div class="col-10 pl-0">
+                {{product.productName}}
+                <strong [hidden]="!product.note"> - {{product.note}}</strong>
+              </div>
+              <div class="col-2">
+                <h4>{{product.quantity}}</h4>
+              </div>
+            </div>
+
+          </li>
+        </ul>
+
+        <div class="card-body">
+          <button type="button" class="btn btn-success btn-lg btn-block" (click)="OrderSuccess(order)" [disabled]="order.status==1">Hoàn tất</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

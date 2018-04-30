@@ -1,4 +1,16 @@
 <div class="container">
+    <div class="order-alert">
+        <div *ngFor="let alert of alerts">
+            <div class="alert alert-{{alert.type}} alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>{{alert.target}}</strong>: {{alert.msg}}
+            </div>
+
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="col-12 col-md-6 col-xl-4" *ngFor="let product of products">
@@ -8,20 +20,17 @@
                 </div>
                 <div class="col-6 pr-0">
                     <h4 class="product-name">{{product.name}}</h4>
-                    <h5 class="product-price">{{product.price}}đ</h5>
-                    <input type="text" class="form-control">
+                    <h5 class="product-price">{{product.price}}.000 đ</h5>
+                    <input type="text" [(ngModel)]="product.note" class="form-control" (focusout)="focusOutProductNote(product)">
                 </div>
                 <div class="qty-spiner col-2 btn-group-vertical" role="group">
                     <button type="button" class="btn btn-secondary" (click)="addToCart(product)">
                         <i class="fas fa-angle-up"></i>
                     </button>
 
-                    <input id="{{product._id}}" class="product-qty" type="number" max="100" min="0" value={{product.quantity}} readonly>
+                    <input id="{{product._id}}" class="product-qty" type="number" max="100" min="0" readonly [ngModel]="product.quantity" />
 
-                    <div *ngIf="product.quantity.errors.min">
-                        Name cannot be Bob.
-                    </div>
-                    
+
                     <button type="button" class="btn btn-secondary" (click)="removeFromCart(product)">
                         <i class="fas fa-angle-down"></i>
                     </button>
@@ -34,39 +43,63 @@
     <footer class="bg-dark">
         <div class="footer-left">
             <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#tableList">
-                Bàn
-                <span class="badge badge-light">{{ table.tableId }}</span>
+                Bàn <span class="badge badge-light">{{ table.name }}</span>
             </button>
-            <button type="button" class="btn btn-danger" (click)="resetTable()">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetTableModal" [disabled]="table.totalPrice==0">
                 Làm mới
             </button>
         </div>
         <div class="footer-right">
-            <button type="button" class="btn btn-success">
-                Đặt món
-                <span class="badge badge-light">{{ table.totalPrice }}.000 đ</span>
+            <button type="button" class="btn btn-success" (click)="submitTable($event)" [disabled]="table.totalPrice==0">
+                Xác nhận                
+                <span class="badge badge-light" [hidden]="table.totalPrice==undefined || table.totalPrice==0">{{ table.totalPrice }}.000 đ</span>
+                <span class="badge badge-light" [hidden]="table.totalPrice!=undefined && table.totalPrice>0">0 đ</span>
             </button>
         </div>
     </footer>
 
-    <div class="modal fade" id="tableList" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 90%" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="row">
-                        <div *ngFor="let tbl of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
-                            <div class="card border-dark text-center" (click)="getSelectedTable(tbl)">
-                                <div class="text-dark" [ngClass]="{'active': tbl._id==table._id}">
-                                    <h2 class="card-title">{{tbl.tableId}}</h2>
-                                    <h5>
-                                        <strong [hidden]="tbl.totalPrice == 0">{{tbl.totalPrice}}.000đ</strong>
-                                        <strong [hidden]="tbl.totalPrice > 0">0đ</strong>
-                                    </h5>
-                                </div>
+</div>
+
+<!-- table list -->
+<div class="modal fade" id="tableList" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                
+                <div class="text-center" [hidden]="tables.length > 0">Không có bàn để hiển thị, vào <a href="/">đây</a> để thêm bàn</div>
+                <div class="row">
+                    <div *ngFor="let tbl of tables" class="col-4 col-sm-3 col-md-2" style="padding: 5px">
+                        <div class="card border-dark text-center" (click)="getSelectedTable(tbl)">
+                            <div class="text-dark" [ngClass]="{'active': tbl._id==table._id}">
+                                <h2 class="card-title">{{ tbl.name }}</h2>
+                                <h5>
+                                    <strong [hidden]="tbl.totalPrice==undefined || tbl.totalPrice==0">{{tbl.totalPrice}}.000đ</strong>
+                                    <strong [hidden]="tbl.totalPrice!=undefined && tbl.totalPrice>0">0đ</strong>
+                                </h5>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- reset table modal -->
+<div class="modal fade" id="resetTableModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div [hidden]="order && order.status!=0" class="alert alert-warning" role="alert">
+                    Bàn này chưa hoàn tất đặt hàng
+                </div>
+                
+                Bạn chắc chắn muốn làm mới bàn
+                <b class="text-danger">{{ table.name }}?</b>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ bỏ</button>
+                <button type="button" class="btn btn-primary" (click)="resetTable()">Ừa đúng rồi</button>
             </div>
         </div>
     </div>

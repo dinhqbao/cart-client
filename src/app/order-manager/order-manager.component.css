@@ -1,0 +1,10 @@
+.order-card{
+    padding: 5px;
+}
+.order-succeeded{
+    background-color: lightgrey;
+}
+
+.order-succeeded li{
+    background-color: lightgrey;
+}

@@ -1,93 +1,180 @@
 <div class="container">
-    <table id="products" class="table table-bordred table-striped">
-        <thead>
-            <tr class="row">
-                <th class="col-6">Name</th>
-                <th class="col-4">Price</th>
-                <th class="col-2">Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="row" *ngFor="let product of products">
-                <td class="col-6">
-                    <a href="#" data-toggle="modal" (click)="showUpdateProductModal(product)">{{product.name}}</a>
-                </td>
-                <td class="col-4">
-                    {{product.price}}.000 VND
-                </td>
-                <td class="col-2">
-                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteProduct" (click)=showDeleteProductModal(product)>
-                            <span class="fas fa-trash"></span>
-                        </button>
-                </td>
-            </tr>
-            <tr>
-        </tbody>
-    </table>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/home">Đặt hàng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/admin">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/order">Quản lý đơn hàng</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" (click)="showCreateProductModal()">
-        Add
-    </button>
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-product-tab" data-toggle="tab" href="#nav-product" role="tab" aria-controls="nav-product"
+                aria-selected="true">Sản phẩm</a>
+            <a class="nav-item nav-link" id="nav-table-tab" data-toggle="tab" href="#nav-table" role="tab" aria-controls="nav-table"
+                aria-selected="false">Bàn</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-product" role="tabpanel" aria-labelledby="nav-product-tab">
 
-    <!-- Create Modal -->
-    <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form [formGroup]="productForm" (ngSubmit)="createProduct()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="productName">Name</label>
-                            <input type="text" class="form-control" id="productName" placeholder="Enter name" formControlName="name">
-                        </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="productPrice">Price</label>
-                                    <div class="input-group">
-                                        <input type="number" value="0" min="0" max="100" class="form-control" id="productPrice" placeholder="Enter price" formControlName="price">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">.000</span>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">$</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="productPrice">Ordinal</label>
-                                    <div class="input-group">
-                                        <input type="number" value="0" min="0" max="100" class="form-control" id="productOrdinal" placeholder="Enter ordinal" formControlName="ordinal">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="productImage">Picture</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" id="productImage" (change)="onFileChange($event)" #fileInput>
-                                    <label class="custom-file-label" for="productImage" *ngIf="product.image">{{ product.image }}</label>
-                                    <label class="custom-file-label" for="productImage" *ngIf="!product.image">Choose file...</label>
-                                </div>
-                                <div class="input-group-append">
-                                    <button class="btn btn-danger" type="button" (click)="clearFile()">Remove file</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Lưu</button>
-                    </div>
-                </form>
-            </div>
+            <table id="products" class="table table-bordred table-striped">
+                <thead>
+                    <tr class="row">
+                        <th class="col-6">Tên sản phẩm</th>
+                        <th class="col-4">Giá</th>
+                        <th class="col-2">Xoá SP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row" *ngFor="let product of products">
+                        <td class="col-6">
+                            <a href="#" data-toggle="modal" (click)="showUpdateProductModal(product)">{{product.name}}</a>
+                        </td>
+                        <td class="col-4">
+                            {{product.price}}.000 VND
+                        </td>
+                        <td class="col-2">
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteProduct" (click)=showDeleteProductModal(product)>
+                                <span class="fas fa-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" (click)="showCreateProductModal()">
+                Thêm sản phẩm
+            </button>
+        </div>
+        <div class="tab-pane fade" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">
+            <table id="tables" class="table table-bordred table-striped">
+                <thead>
+                    <tr class="row">
+                        <th class="col-6">Tên bàn</th>
+                        <th class="col-4">Thứ tự</th>
+                        <th class="col-2">Xoá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row" *ngFor="let table of tables">
+                        <td class="col-6">
+                            <a href="#" data-toggle="modal" (click)="showUpdateTableModal(table)">{{table.name}}</a>
+                        </td>
+                        <td class="col-4">
+                            {{table.ordinal}}
+                        </td>
+                        <td class="col-2">
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteTable" (click)=showDeleteTableModal(table)>
+                                <span class="fas fa-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" (click)="showCreateTableModal()">
+                Thêm bàn
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Update Modal -->
-    <!-- <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog">
+<!-- Create Modal -->
+<div class="modal fade" id="createProductModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form [formGroup]="productForm" (ngSubmit)="createProduct()">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="productName">Name</label>
+                        <input type="text" class="form-control" id="productName" placeholder="Enter name" formControlName="name">
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="productPrice">Price</label>
+                                <div class="input-group">
+                                    <input type="number" value="0" min="0" max="100" class="form-control" id="productPrice" placeholder="Enter price" formControlName="price">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">.000</span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="productPrice">Ordinal</label>
+                                <div class="input-group">
+                                    <input type="number" value="0" min="0" max="100" class="form-control" id="productOrdinal" placeholder="Enter ordinal" formControlName="ordinal">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage">Picture</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" id="productImage" (change)="onFileChange($event)" #fileInput>
+                                <label class="custom-file-label" for="productImage" *ngIf="product.image">{{ product.image }}</label>
+                                <label class="custom-file-label" for="productImage" *ngIf="!product.image">Choose file...</label>
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-danger" type="button" (click)="clearFile()">Remove file</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createTableModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form (ngSubmit)="createTable()">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="tableName">Name</label>
+                        <input type="text" class="form-control" id="tableName" placeholder="Enter name" [(ngModel)]="table.name" name="tableName">
+                    </div>
+                    <div class="form-group">
+                        <label for="tableOrdinal">Ordinal</label>
+                        <input type="number" value="0" min="0" max="100" class="form-control" id="tableOrdinal" placeholder="Enter ordinal" [(ngModel)]="table.ordinal"
+                            name="tableOrdinal">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<!-- <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form [formGroup]="updateProductForm" (ngSubmit)="updateProduct()">
@@ -142,17 +229,33 @@
         </div>
     </div> -->
 
-    <!-- Delete Product modal -->
-    <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    Bạn muốn xoá <b class="text-warning">{{ product.name }}</b>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="deleteProduct()">Yes</button>
-                </div>
+<!-- Delete Product modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                Bạn muốn xoá sản phẩm
+                <b class="text-warning">{{ product.name }}</b>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ bỏ</button>
+                <button type="button" class="btn btn-primary" (click)="deleteProduct()">Ừa đúng rồi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Table modal -->
+<div class="modal fade" id="deleteTableModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                Bạn muốn xoá bàn
+                <b class="text-warning">{{ table.name }}</b>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ bỏ</button>
+                <button type="button" class="btn btn-primary" (click)="deleteTable()">Ừa đúng rồi</button>
             </div>
         </div>
     </div>
